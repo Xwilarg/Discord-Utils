@@ -126,5 +126,14 @@ namespace DiscordUtils
                 }
             }.Build());
         }
+
+        /// <summary>
+        /// Check if file extension is the one of an image displayable per Discord
+        /// </summary>
+        public static bool IsImage(string extension)
+        {
+            return (extension.StartsWith("gif") || extension.StartsWith("png") || extension.StartsWith("jpg")
+                || extension.StartsWith("jpeg"));
+        }
     }
 }
