@@ -1,4 +1,5 @@
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using System;
 using System.IO;
@@ -134,6 +135,66 @@ namespace DiscordUtils
         {
             return (extension.StartsWith("gif") || extension.StartsWith("png") || extension.StartsWith("jpg")
                 || extension.StartsWith("jpeg"));
+        }
+
+        /// <summary>
+        /// Display a message in chanel when an exception occured
+        /// Callback from BaseDiscordClient.Lot
+        /// </summary>
+        public static Task LogError(LogMessage msg)
+        {
+            CommandException ce = msg.Exception as CommandException;
+            if (ce != null)
+            {
+                ce.Context.Channel.SendMessageAsync("", false, new EmbedBuilder()
+                {
+                    Color = Color.Red,
+                    Title = msg.Exception.InnerException.GetType().ToString(),
+                    Description = "An error occured while executing last command.\nHere are some details about it: " + msg.Exception.InnerException.Message
+                }.Build());
+            }
+            return Task.CompletedTask;
+        }
+        
+        /// <summary>
+        /// Display a message in the console
+        /// Callback from CommandService.Log
+        /// </summary>
+        public static Task Log(LogMessage msg)
+        {
+            var cc = Console.ForegroundColor;
+            switch (msg.Severity)
+            {
+                case LogSeverity.Critical:
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    break;
+                case LogSeverity.Error:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+                case LogSeverity.Warning:
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    break;
+                case LogSeverity.Info:
+                    Console.ForegroundColor = ConsoleColor.White;
+                    break;
+                case LogSeverity.Verbose:
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    break;
+                case LogSeverity.Debug:
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    break;
+            }
+            Console.WriteLine(msg);
+            Console.ForegroundColor = cc;
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Escape dangerous characters in string
+        /// </summary>
+        public static string EscapeString(string msg)
+        {
+            return (msg.Replace("\\", "\\\\").Replace("\"", "\\\""));
         }
     }
 }
