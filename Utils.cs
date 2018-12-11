@@ -143,6 +143,7 @@ namespace DiscordUtils
         /// </summary>
         public static Task LogError(LogMessage msg)
         {
+            Log(msg);
             CommandException ce = msg.Exception as CommandException;
             if (ce != null)
             {
