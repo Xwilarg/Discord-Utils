@@ -112,12 +112,12 @@ namespace DiscordUtils
                     new EmbedFieldBuilder()
                     {
                         Name = "Account creation",
-                        Value = me.CreatedAt.ToString("HH:mm:ss dd:MM:yy")
+                        Value = me.CreatedAt.ToString("HH:mm:ss dd/MM/yy")
                     },
                     new EmbedFieldBuilder()
                     {
                         Name = "Last version",
-                        Value = new FileInfo(Assembly.GetEntryAssembly().Location).LastWriteTimeUtc.ToString("HH:mm:ss dd:MM:yy")
+                        Value = new FileInfo(Assembly.GetEntryAssembly().Location).LastWriteTimeUtc.ToString("HH:mm:ss dd/MM/yy")
                     },
                     new EmbedFieldBuilder()
                     {
