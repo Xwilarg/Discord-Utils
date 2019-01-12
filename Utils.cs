@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -66,6 +67,34 @@ namespace DiscordUtils
                     return (user);
             }
             return (null);
+        }
+
+        public static IRole GetRole(string name, IGuild guild)
+        {
+            if (ulong.TryParse(name, out ulong id2))
+            {
+                IRole role = guild.GetRole(id2);
+                if (role != null)
+                    return (role);
+            }
+            string lowerName = CleanWord(name);
+            foreach (IRole role in guild.Roles)
+            {
+                if (CleanWord(role.Name) == lowerName)
+                    return (role);
+            }
+            return (null);
+        }
+
+        public static string CleanWord(string word)
+        {
+            StringBuilder finalStr = new StringBuilder();
+            foreach (char c in word)
+            {
+                if (char.IsLetterOrDigit(c))
+                    finalStr.Append(char.ToLower(c));
+            }
+            return (finalStr.ToString());
         }
 
         /// <summary>
