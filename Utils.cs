@@ -71,6 +71,8 @@ namespace DiscordUtils
 
         public static IRole GetRole(string name, IGuild guild)
         {
+            if (guild == null)
+                return (null);
             if (ulong.TryParse(name, out ulong id2))
             {
                 IRole role = guild.GetRole(id2);
