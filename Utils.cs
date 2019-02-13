@@ -2,9 +2,11 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -227,6 +229,35 @@ namespace DiscordUtils
         public static string EscapeString(string msg)
         {
             return (msg.Replace("\\", "\\\\").Replace("\"", "\\\""));
+        }
+
+        /// <summary>
+        /// Send informations to website
+        /// </summary>
+        /// <param name="name">Name of the bot</param>
+        /// <param name="website">Website to send information about</param>
+        /// <param name="token">Authentification token</param>
+        /// <param name="elem1">Element to send (name)</param>
+        /// <param name="elem2">Element to send (value)</param>
+        public static async Task WebsiteUpdate(string name, string website, string token, string elem1, string elem2)
+        {
+            HttpClient httpClient = new HttpClient();
+            var values = new Dictionary<string, string> {
+                { "token", token },
+                { "action", "add" },
+                { "name", name },
+                { elem1, elem2 }
+            };
+            HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, website);
+            msg.Content = new FormUrlEncodedContent(values);
+            try
+            {
+                await httpClient.SendAsync(msg);
+            }
+            catch (HttpRequestException)
+            { }
+            catch (TaskCanceledException)
+            { }
         }
     }
 }
