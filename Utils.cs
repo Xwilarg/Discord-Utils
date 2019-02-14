@@ -47,15 +47,12 @@ namespace DiscordUtils
         /// <returns></returns>
         public static async Task<IGuildUser> GetUser(string name, IGuild guild)
         {
-            Match match = Regex.Match(name, "<@[!]?[0-9]{18}>");
+            Match match = Regex.Match(name, "<@[!]?([0-9]{18})>");
             if (match.Success)
             {
-                if (ulong.TryParse(string.Concat(match.Value.Where(x => char.IsNumber(x))), out ulong id))
-                {
-                    IGuildUser user = await guild.GetUserAsync(id);
-                    if (user != null)
-                        return (user);
-                }
+                IGuildUser user = await guild.GetUserAsync(ulong.Parse(match.Groups[1].Value));
+                if (user != null)
+                    return (user);
             }
             if (ulong.TryParse(name, out ulong id2))
             {
@@ -86,6 +83,29 @@ namespace DiscordUtils
             {
                 if (CleanWord(role.Name) == lowerName)
                     return (role);
+            }
+            return (null);
+        }
+
+        public static async Task<ITextChannel> GetTextChannel(string name, IGuild guild)
+        {
+            Match match = Regex.Match(name, "<#([0-9]{18})>");
+            if (match.Success)
+            {
+                ITextChannel chan = await guild.GetTextChannelAsync(ulong.Parse(match.Groups[1].Value));
+                if (chan != null)
+                    return (chan);
+            }
+            if (ulong.TryParse(name, out ulong id2))
+            {
+                ITextChannel chan = await guild.GetTextChannelAsync(id2);
+                if (chan != null)
+                    return (chan);
+            }
+            foreach (ITextChannel chan in await guild.GetTextChannelsAsync())
+            {
+                if (chan.Name == name)
+                    return (chan);
             }
             return (null);
         }
