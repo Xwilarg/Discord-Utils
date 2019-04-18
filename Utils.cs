@@ -4,7 +4,6 @@ using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
@@ -278,6 +277,25 @@ namespace DiscordUtils
             { }
             catch (TaskCanceledException)
             { }
+        }
+
+        /// <summary>
+        /// FeatureRequest is a struct returned by functions.
+        /// Mostly used to abstract commands to separate modules that interract with Discord and function that return features
+        /// T is a struct containing the answer of the function
+        /// U is an enum containing if an error occured or not
+        /// </summary>
+        public struct FeatureRequest<T, U>
+        where U : Enum
+        {
+            public FeatureRequest(T answer, U error)
+            {
+                this.answer = answer;
+                this.error = error;
+            }
+
+            public T answer;
+            public U error;
         }
     }
 }
