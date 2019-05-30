@@ -109,6 +109,26 @@ namespace DiscordUtils
             return (null);
         }
 
+        public static async Task<IMessage> GetMessage(string id, IMessageChannel chan)
+        {
+            ulong uid;
+            if (!ulong.TryParse(id, out uid))
+                return null;
+            IMessage msg = await chan.GetMessageAsync(uid);
+            if (msg != null)
+                return msg;
+            ITextChannel textChan = chan as ITextChannel;
+            if (textChan == null)
+                return null;
+            foreach (ITextChannel c in await textChan.Guild.GetTextChannelsAsync())
+            {
+                msg = await c.GetMessageAsync(uid);
+                if (msg != null)
+                    return msg;
+            }
+            return null;
+        }
+
         public static string CleanWord(string word)
         {
             StringBuilder finalStr = new StringBuilder();
