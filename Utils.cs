@@ -283,7 +283,6 @@ namespace DiscordUtils
             HttpClient httpClient = new HttpClient();
             var values = new Dictionary<string, string> {
                 { "token", token },
-                { "action", "add" },
                 { "name", name },
                 { elem1, elem2 }
             };
