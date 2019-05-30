@@ -123,9 +123,14 @@ namespace DiscordUtils
                 return null;
             foreach (ITextChannel c in await textChan.Guild.GetTextChannelsAsync())
             {
-                msg = await c.GetMessageAsync(uid);
-                if (msg != null)
-                    return msg;
+                try
+                {
+                    msg = await c.GetMessageAsync(uid);
+                    if (msg != null)
+                        return msg;
+                }
+                catch (Discord.Net.HttpException)
+                { }
             }
             return null;
         }
