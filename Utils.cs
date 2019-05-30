@@ -1,6 +1,7 @@
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -315,6 +316,79 @@ namespace DiscordUtils
 
             public T answer;
             public U error;
+        }
+
+        /// <summary>
+        /// Init translations
+        /// </summary>
+        /// <param name="translations">key is language name (en, fr, etc...), value is translations key/value</param>
+        /// <param name="translationKeyAlternate">Contains alternative name for a translation language, for example for 'fr' you will have 'french' and 'français'</param>
+        /// <param name="translationFolder">The folder containing all translations</param>
+        public static void Init(Dictionary<string, Dictionary<string, string>> translations,
+            Dictionary<string, List<string>> translationKeyAlternate,
+            string translationFolder)
+        {
+            if (!Directory.Exists("Translations"))
+                Directory.CreateDirectory("Translations");
+            if (Directory.Exists(translationFolder))
+            {
+                foreach (string dir in Directory.GetDirectories(translationFolder))
+                {
+                    DirectoryInfo di = new DirectoryInfo(dir);
+                    foreach (string file in Directory.GetFiles(dir))
+                    {
+                        FileInfo fi = new FileInfo(file);
+                        File.Copy(file, "Translations/" + di.Name + "-" + fi.Name, true);
+                    }
+                }
+            }
+            foreach (string file in Directory.GetFiles("Translations"))
+            {
+                FileInfo fi = new FileInfo(file);
+                Match match = Regex.Match(fi.Name, "([a-z]+)-(infos|terms).json");
+                if (match.Groups.Count < 3)
+                    continue;
+                string key = match.Groups[1].Value;
+                if (match.Groups[2].Value == "infos")
+                {
+                    dynamic json = JsonConvert.DeserializeObject(File.ReadAllText(file));
+                    translationKeyAlternate.Add(key, new List<string>()
+                    {
+                        json.nameEnglish.ToString(),
+                        json.nameLanguage.ToString()
+                    });
+                }
+                else
+                {
+                    translations.Add(key, new Dictionary<string, string>());
+                    foreach (Match m in Regex.Matches(File.ReadAllText(file), "\"([a-zA-Z0-9]+)\" ?: ?\"([^\"]+)\""))
+                        translations[key].Add(m.Groups[1].Value, m.Groups[2].Value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get sentence in guild language, if can't then fallback on english
+        /// </summary>
+        /// <param name="translations">Dictionnary containing all sentences</param>
+        /// <param name="guildLanguage">Language to search in</param>
+        /// <param name="word">Translation key</param>
+        /// <param name="args">Optionnal argument for translation</param>
+        /// <returns></returns>
+        public static string Translate(Dictionary<string, Dictionary<string, string>> translations,
+            string guildLanguage, string word, params string[] args)
+        {
+            string sentence;
+            if (translations[guildLanguage].ContainsKey(word))
+                sentence = translations[guildLanguage][word];
+            else if (translations["en"].ContainsKey(word))
+                sentence = translations["en"][word];
+            else
+                return (Translate(translations, guildLanguage, "invalidKey", word));
+            sentence = sentence.Replace("\\n", "\n");
+            for (int i = 0; i < args.Length; i++)
+                sentence = sentence.Replace("{" + i + "}", args[i]);
+            return (sentence);
         }
     }
 }
