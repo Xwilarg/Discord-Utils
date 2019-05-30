@@ -324,7 +324,7 @@ namespace DiscordUtils
         /// <param name="translations">key is language name (en, fr, etc...), value is translations key/value</param>
         /// <param name="translationKeyAlternate">Contains alternative name for a translation language, for example for 'fr' you will have 'french' and 'français'</param>
         /// <param name="translationFolder">The folder containing all translations</param>
-        public static void Init(Dictionary<string, Dictionary<string, string>> translations,
+        public static void InitTranslations(Dictionary<string, Dictionary<string, string>> translations,
             Dictionary<string, List<string>> translationKeyAlternate,
             string translationFolder)
         {
@@ -379,12 +379,12 @@ namespace DiscordUtils
             string guildLanguage, string word, params string[] args)
         {
             string sentence;
-            if (translations[guildLanguage].ContainsKey(word))
+            if (guildLanguage != null && translations[guildLanguage].ContainsKey(word))
                 sentence = translations[guildLanguage][word];
             else if (translations["en"].ContainsKey(word))
                 sentence = translations["en"][word];
             else
-                return (Translate(translations, guildLanguage, "invalidKey", word));
+                return (Translate(translations, guildLanguage != null ? guildLanguage : "en", "invalidKey", word));
             sentence = sentence.Replace("\\n", "\n");
             for (int i = 0; i < args.Length; i++)
                 sentence = sentence.Replace("{" + i + "}", args[i]);
