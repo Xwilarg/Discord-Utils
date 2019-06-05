@@ -76,11 +76,9 @@ namespace DiscordUtils
             if (match.Success)
             {
                 IRole role = guild.GetRole(ulong.Parse(match.Groups[1].Value));
-                Console.WriteLine("Success");
                 if (role != null)
                     return (role);
             }
-            Console.WriteLine("Stop match");
             if (ulong.TryParse(name, out ulong id2))
             {
                 IRole role = guild.GetRole(id2);
