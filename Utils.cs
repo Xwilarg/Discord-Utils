@@ -179,37 +179,37 @@ namespace DiscordUtils
         /// <returns>Embed containing bot info</returns>
         public static Embed GetBotInfo(DateTime startTime, string botName, SocketSelfUser me)
         {
+            List<EmbedFieldBuilder> fields = new List<EmbedFieldBuilder>();
+            fields.Add(new EmbedFieldBuilder()
+            {
+                Name = "Uptime",
+                Value = TimeSpanToString(DateTime.Now.Subtract(startTime))
+            });
+            fields.Add(new EmbedFieldBuilder()
+            {
+                Name = "Creator",
+                Value = "Zirk#0001"
+            });
+            fields.Add(new EmbedFieldBuilder()
+            {
+                Name = "Account creation",
+                Value = me.CreatedAt.ToString("HH:mm:ss dd/MM/yy")
+            });
+            fields.Add(new EmbedFieldBuilder()
+            {
+                Name = "Last version",
+                Value = new FileInfo(Assembly.GetEntryAssembly().Location).LastWriteTimeUtc.ToString("HH:mm:ss dd/MM/yy")
+            });
+            if (botName != null)
+                fields.Add(new EmbedFieldBuilder()
+                {
+                    Name = "GitHub",
+                    Value = "https://github.com/Xwilarg/" + botName
+                });
             return (new EmbedBuilder()
             {
                 Color = Color.Purple,
-                Fields = new System.Collections.Generic.List<EmbedFieldBuilder>()
-                {
-                    new EmbedFieldBuilder()
-                    {
-                        Name = "Uptime",
-                        Value = TimeSpanToString(DateTime.Now.Subtract(startTime))
-                    },
-                    new EmbedFieldBuilder()
-                    {
-                        Name = "Creator",
-                        Value = "Zirk#0001"
-                    },
-                    new EmbedFieldBuilder()
-                    {
-                        Name = "Account creation",
-                        Value = me.CreatedAt.ToString("HH:mm:ss dd/MM/yy")
-                    },
-                    new EmbedFieldBuilder()
-                    {
-                        Name = "Last version",
-                        Value = new FileInfo(Assembly.GetEntryAssembly().Location).LastWriteTimeUtc.ToString("HH:mm:ss dd/MM/yy")
-                    },
-                    new EmbedFieldBuilder()
-                    {
-                        Name = "GitHub",
-                        Value = "https://github.com/Xwilarg/" + botName
-                    }
-                }
+                Fields = fields
             }.Build());
         }
 
