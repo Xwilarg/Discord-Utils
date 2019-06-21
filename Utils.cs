@@ -280,7 +280,17 @@ namespace DiscordUtils
         /// </summary>
         public static string EscapeString(string msg)
         {
-            return (msg.Replace("\\", "\\\\").Replace("\"", "\\\""));
+            return msg.Replace("\\", "\\\\").Replace("\"", "\\\"");
+        }
+
+        /// <summary>
+        /// Clean HTML by removing useless balises and formatting the msg for Discord
+        /// </summary>
+        public static string CleanHtml(string msg)
+        {
+            return Regex.Replace(
+                Regex.Replace(msg, "<b>([^<]+)<\\/b>", "*$1*"),
+                "<[^>]+>([^<]+)<\\/[^>]+>", "$1");
         }
 
         /// <summary>
