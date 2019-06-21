@@ -286,7 +286,7 @@ namespace DiscordUtils
                     Regex.Replace(
                         Regex.Replace(msg, "<b>([^<]+)<\\/b>", "**$1**"),
                     "<[^>]+>([^<]+)<\\/[^>]+>", "$1"),
-                    "<\\/[^>]+>", "");
+                    "<\\/?[^>]+>", "");
         }
 
         /// <summary>
