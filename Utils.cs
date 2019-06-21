@@ -283,8 +283,10 @@ namespace DiscordUtils
         public static string CleanHtml(string msg)
         {
             return Regex.Replace(
-                Regex.Replace(msg, "<b>([^<]+)<\\/b>", "**$1**"),
-                "<[^>]+>([^<]+)<\\/[^>]+>", "$1");
+                    Regex.Replace(
+                        Regex.Replace(msg, "<b>([^<]+)<\\/b>", "**$1**"),
+                    "<[^>]+>([^<]+)<\\/[^>]+>", "$1"),
+                    "<\\/[^>]+>", "");
         }
 
         /// <summary>
