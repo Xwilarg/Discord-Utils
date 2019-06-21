@@ -20,20 +20,14 @@ namespace DiscordUtils
         /// Check if an URL is valid or not
         /// </summary>
         /// <param name="url">The URL to check</param>
-        public static bool IsLinkValid(string url)
+        public static async Task<bool> IsLinkValid(string url)
         {
             if (url.StartsWith("http://") || url.StartsWith("https://"))
             {
-                try
+                using (HttpClient hc = new HttpClient())
                 {
-                    WebRequest request = WebRequest.Create(url);
-                    request.Method = "HEAD";
-                    request.GetResponse();
-                    return (true);
-                }
-                catch (WebException)
-                {
-                    return (false);
+                    var response = await hc.SendAsync(new HttpRequestMessage(HttpMethod.Head, url));
+                    return response.IsSuccessStatusCode;
                 }
             }
             return (false);
