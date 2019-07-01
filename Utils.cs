@@ -20,20 +20,14 @@ namespace DiscordUtils
         /// Check if an URL is valid or not
         /// </summary>
         /// <param name="url">The URL to check</param>
-        public static bool IsLinkValid(string url)
+        public static async Task<bool> IsLinkValid(string url)
         {
             if (url.StartsWith("http://") || url.StartsWith("https://"))
             {
-                try
+                using (HttpClient hc = new HttpClient())
                 {
-                    WebRequest request = WebRequest.Create(url);
-                    request.Method = "HEAD";
-                    request.GetResponse();
-                    return (true);
-                }
-                catch (WebException)
-                {
-                    return (false);
+                    var response = await hc.SendAsync(new HttpRequestMessage(HttpMethod.Head, url));
+                    return response.IsSuccessStatusCode;
                 }
             }
             return (false);
@@ -183,37 +177,37 @@ namespace DiscordUtils
         /// <returns>Embed containing bot info</returns>
         public static Embed GetBotInfo(DateTime startTime, string botName, SocketSelfUser me)
         {
+            List<EmbedFieldBuilder> fields = new List<EmbedFieldBuilder>();
+            fields.Add(new EmbedFieldBuilder()
+            {
+                Name = "Uptime",
+                Value = TimeSpanToString(DateTime.Now.Subtract(startTime))
+            });
+            fields.Add(new EmbedFieldBuilder()
+            {
+                Name = "Creator",
+                Value = "Zirk#0001"
+            });
+            fields.Add(new EmbedFieldBuilder()
+            {
+                Name = "Account creation",
+                Value = me.CreatedAt.ToString("HH:mm:ss dd/MM/yy")
+            });
+            fields.Add(new EmbedFieldBuilder()
+            {
+                Name = "Last version",
+                Value = new FileInfo(Assembly.GetEntryAssembly().Location).LastWriteTimeUtc.ToString("HH:mm:ss dd/MM/yy")
+            });
+            if (botName != null)
+                fields.Add(new EmbedFieldBuilder()
+                {
+                    Name = "GitHub",
+                    Value = "https://github.com/Xwilarg/" + botName
+                });
             return (new EmbedBuilder()
             {
                 Color = Color.Purple,
-                Fields = new System.Collections.Generic.List<EmbedFieldBuilder>()
-                {
-                    new EmbedFieldBuilder()
-                    {
-                        Name = "Uptime",
-                        Value = TimeSpanToString(DateTime.Now.Subtract(startTime))
-                    },
-                    new EmbedFieldBuilder()
-                    {
-                        Name = "Creator",
-                        Value = "Zirk#0001"
-                    },
-                    new EmbedFieldBuilder()
-                    {
-                        Name = "Account creation",
-                        Value = me.CreatedAt.ToString("HH:mm:ss dd/MM/yy")
-                    },
-                    new EmbedFieldBuilder()
-                    {
-                        Name = "Last version",
-                        Value = new FileInfo(Assembly.GetEntryAssembly().Location).LastWriteTimeUtc.ToString("HH:mm:ss dd/MM/yy")
-                    },
-                    new EmbedFieldBuilder()
-                    {
-                        Name = "GitHub",
-                        Value = "https://github.com/Xwilarg/" + botName
-                    }
-                }
+                Fields = fields
             }.Build());
         }
 
@@ -284,7 +278,19 @@ namespace DiscordUtils
         /// </summary>
         public static string EscapeString(string msg)
         {
-            return (msg.Replace("\\", "\\\\").Replace("\"", "\\\""));
+            return msg.Replace("\\", "\\\\").Replace("\"", "\\\"");
+        }
+
+        /// <summary>
+        /// Clean HTML by removing useless balises and formatting the msg for Discord
+        /// </summary>
+        public static string CleanHtml(string msg)
+        {
+            return Regex.Replace(
+                    Regex.Replace(
+                        Regex.Replace(msg, "<b>([^<]+)<\\/b>", "**$1**"),
+                    "<[^>]+>([^<]+)<\\/[^>]+>", "$1"),
+                    "<\\/?[^>]+>", "");
         }
 
         /// <summary>
