@@ -122,11 +122,15 @@ namespace DiscordUtils
             ulong uid;
             if (!ulong.TryParse(id, out uid))
                 return null;
-            IMessage msg = await chan.GetMessageAsync(uid);
-            if (msg != null)
-                return msg;
+            IMessage msg;
+            if (uid != 0)
+            {
+                msg = await chan.GetMessageAsync(uid);
+                if (msg != null)
+                    return msg;
+            }
             ITextChannel textChan = chan as ITextChannel;
-            if (textChan == null)
+            if (textChan == null || uid == 0)
                 return null;
             foreach (ITextChannel c in await textChan.Guild.GetTextChannelsAsync())
             {
