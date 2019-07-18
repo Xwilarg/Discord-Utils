@@ -57,7 +57,7 @@ namespace DiscordUtils
             name = name.ToLower();
             foreach (IGuildUser user in await guild.GetUsersAsync())
             {
-                if (user.Nickname.ToLower() == name || user.Username.ToLower() == name || user.ToString().ToLower() == name)
+                if (user.Nickname?.ToLower() == name || user.Username.ToLower() == name || user.ToString().ToLower() == name)
                     return (user);
             }
             return (null);
