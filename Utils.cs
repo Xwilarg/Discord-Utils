@@ -413,5 +413,13 @@ namespace DiscordUtils
                 sentence = sentence.Replace("{" + i + "}", args[i]);
             return (sentence);
         }
+
+        public static bool CanModify(IUser user, ulong ownerId)
+        {
+            if (user.Id == ownerId)
+                return true;
+            IGuildUser guildUser = (IGuildUser)user;
+            return guildUser.GuildPermissions.ManageGuild;
+        }
     }
 }
