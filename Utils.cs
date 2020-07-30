@@ -424,5 +424,8 @@ namespace DiscordUtils
 
         public static string ToWordCase(string word)
             => char.ToUpper(word[0]) + string.Join("", word.Skip(1)).ToLower();
+
+        public static bool CanSendNsfw(IMessageChannel chan)
+            => !(chan is ITextChannel) || ((ITextChannel)chan).IsNsfw;
     }
 }
