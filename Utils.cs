@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
@@ -421,5 +421,8 @@ namespace DiscordUtils
             IGuildUser guildUser = (IGuildUser)user;
             return guildUser.GuildPermissions.ManageGuild;
         }
+
+        public static string ToWordCase(string word)
+            => char.ToUpper(word[0]) + string.Join("", word.Skip(1)).ToLower();
     }
 }
