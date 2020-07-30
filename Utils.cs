@@ -30,7 +30,7 @@ namespace DiscordUtils
                     return response.IsSuccessStatusCode;
                 }
             }
-            return (false);
+            return false;
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace DiscordUtils
                 if (char.IsLetterOrDigit(c))
                     finalStr.Append(char.ToLower(c));
             }
-            return (finalStr.ToString());
+            return finalStr.ToString();
         }
 
         /// <summary>
@@ -427,5 +427,42 @@ namespace DiscordUtils
 
         public static bool CanSendNsfw(IMessageChannel chan)
             => !(chan is ITextChannel) || ((ITextChannel)chan).IsNsfw;
+
+        /// <summary>
+        /// Greatest Common Divisor
+        /// </summary>
+        public static int GCD(int a, int b)
+        {
+            while (a != 0 && b != 0)
+            {
+                if (a > b)
+                    a %= b;
+                else
+                    b %= a;
+            }
+            return a == 0 ? b : a;
+        }
+
+        /// <summary>
+        /// 10000000 -> 10 000k
+        /// </summary>
+        public static string MakeNumberReadable(string str)
+        {
+            if (str.Length < 4)
+                return str;
+            str = str[0..^3];
+            StringBuilder finalStr = new StringBuilder();
+            str = string.Join("", str.Reverse());
+            while (str.Length > 3)
+            {
+                finalStr.Append(str[0..3] + " ");
+                str = str.Substring(3);
+            }
+            if (str.Length == 0)
+                finalStr.Remove(0, finalStr.Length - 1);
+            else
+                finalStr.Append(str);
+            return string.Join("", finalStr.ToString().Reverse()) + "k";
+        }
     }
 }
