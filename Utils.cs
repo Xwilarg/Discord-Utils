@@ -26,6 +26,7 @@ namespace DiscordUtils
             {
                 using (HttpClient hc = new HttpClient())
                 {
+                    hc.DefaultRequestHeaders.Add("User-Agent", "Sanara");
                     var response = await hc.SendAsync(new HttpRequestMessage(HttpMethod.Head, url));
                     return response.IsSuccessStatusCode;
                 }
