@@ -223,6 +223,9 @@ namespace DiscordUtils
                 || extension.StartsWith("jpeg"));
         }
 
+        public static string GetExtension(string file)
+            => Path.GetExtension(file);
+
         /// <summary>
         /// Display a message in chanel when an exception occured
         /// Callback from BaseDiscordClient.Lot
