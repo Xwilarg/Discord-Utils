@@ -114,10 +114,18 @@ namespace DiscordUtils
 
         public static async Task<IMessage> GetMessage(string id, IMessageChannel chan)
         {
+            IMessage msg;
+            var match = Regex.Match(id, "https:\\/\\/([^\\.]+\\.)?discordapp\\.com\\/channels\\/([0-9]{18})\\/([0-9]{18})\\/([0-9]{18})");
+            var tChan = chan as ITextChannel;
+            if (match.Success && tChan is ITextChannel && match.Groups[2].Value == tChan.GuildId.ToString())
+            {
+                msg = await (await tChan.Guild.GetTextChannelAsync(ulong.Parse(match.Groups[3].Value)))?.GetMessageAsync(ulong.Parse(match.Groups[4].Value));
+                if (msg != null)
+                    return msg;
+            }
             ulong uid;
             if (!ulong.TryParse(id, out uid))
                 return null;
-            IMessage msg;
             if (uid != 0)
             {
                 msg = await chan.GetMessageAsync(uid);
