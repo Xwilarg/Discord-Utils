@@ -292,11 +292,14 @@ namespace DiscordUtils
         /// </summary>
         public static string CleanHtml(string msg)
         {
-            return Regex.Replace(
-                    Regex.Replace(
-                        Regex.Replace(msg, "<b>([^<]+)<\\/b>", "**$1**"),
-                    "<[^>]+>([^<]+)<\\/[^>]+>", "$1"),
-                    "<\\/?[^>]+>", "");
+            msg = Regex.Replace(msg, "<br *\\/>", "\n");
+            msg = Regex.Replace(msg, "<\\/br>", "\n");
+            msg = Regex.Replace(msg, "<b>([^<]+)<\\/b>", "**$1**");
+            msg = Regex.Replace(msg, "<strong>([^<]+)<\\/strong>", "**$1**");
+            msg = Regex.Replace(msg, "<a href=\"([^\"]+)\">([^<]+)<\\/a>", "[$2]($1)");
+            msg = Regex.Replace(msg, "<[^>]+>([^<]+)<\\/[^>]+>", "$1");
+            msg = Regex.Replace(msg, "<\\/?[^>]+>", "");
+            return msg;
         }
 
         /// <summary>
