@@ -230,20 +230,19 @@ namespace DiscordUtils
         /// Display a message in chanel when an exception occured
         /// Callback from BaseDiscordClient.Lot
         /// </summary>
-        public static Task LogError(LogMessage msg)
+        public static async Task LogErrorAsync(LogMessage msg)
         {
-            Log(msg);
+            await Log(msg);
             CommandException ce = msg.Exception as CommandException;
             if (ce != null)
             {
-                ce.Context.Channel.SendMessageAsync("", false, new EmbedBuilder()
+                await ce.Context.Channel.SendMessageAsync("", false, new EmbedBuilder()
                 {
                     Color = Color.Red,
                     Title = msg.Exception.InnerException.GetType().ToString(),
                     Description = "An error occured while executing last command.\nHere are some details about it: " + msg.Exception.InnerException.Message
                 }.Build());
             }
-            return Task.CompletedTask;
         }
 
         /// <summary>
