@@ -150,7 +150,8 @@ namespace DiscordUtils
                 if (char.IsLetterOrDigit(c))
                     finalStr.Append(char.ToLower(c));
             }
-            return finalStr.ToString();
+            var result = finalStr.ToString();
+            return result.Length == 0 ? word : result;
         }
 
         /// <summary>
