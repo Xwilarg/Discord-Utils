@@ -454,7 +454,7 @@ namespace DiscordUtils
         /// <summary>
         /// 10000000 -> 10 000k
         /// </summary>
-        public static string MakeNumberReadable(string str)
+        /*public static string MakeNumberReadable(string str)
         {
             if (str.Length < 4)
                 return str;
@@ -471,6 +471,6 @@ namespace DiscordUtils
             else
                 finalStr.Append(str);
             return string.Join("", finalStr.ToString().Reverse()) + "k";
-        }
+        }*/
     }
 }
