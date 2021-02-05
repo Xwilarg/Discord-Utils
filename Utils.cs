@@ -219,7 +219,8 @@ namespace DiscordUtils
         /// </summary>
         public static bool IsImage(string extension)
         {
-            if (extension[0] == '.') extension = extension.Substring(1);
+            extension = extension.ToLowerInvariant();
+            if (extension[0] == '.') extension = extension[1..];
             return (extension.StartsWith("gif") || extension.StartsWith("png") || extension.StartsWith("jpg")
                 || extension.StartsWith("jpeg"));
         }
